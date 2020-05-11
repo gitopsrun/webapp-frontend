@@ -5,5 +5,5 @@ resources:
 - ../../base
 images:
 - name: frontend
-  newName: gitopsrun/webpp-frontend
-  newTag: production
+  newName: gitopsrun/frontend
+  newTag: 0.0.1
