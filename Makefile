@@ -1,6 +1,16 @@
-
+VERSION:=latest
+RELEASE_IMAGE:="gitopsrun/frontend:$(VERSION)"
 BUILD_DATE:=$(shell date +%s)
 LOCAL_IMAGE:="test/frontend:$(BUILD_DATE)"
+
+release:
+	git pull origin master
+	git checkout master
+	cd deploy/overlays/production && kustomize edit set image frontend=${RELEASE_IMAGE}
+	git commit -a -m "Release $(VERSION)"
+	git push origin master
+	git tag $(VERSION)
+	git push origin $(VERSION)
 
 build:
 	docker build -t $(LOCAL_IMAGE) .
