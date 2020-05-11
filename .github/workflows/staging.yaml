@@ -1,0 +1,41 @@
+name: staging
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-push:
+    env:
+      IMG_REPO: gitopsrun/webpp-frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Kustomize
+        uses: ./.github/actions/kustomize
+      - name: Set image metadata
+        id: image
+        run: |
+          TAG=${GITHUB_SHA::7}
+          IMG=${IMG_REPO}:${TAG}
+          echo ::set-output name=IMG::${IMG}
+          echo ::set-output name=TAG::${TAG}
+      - name: Set image tag
+        run: |
+          cd deploy/overlays/staging
+          kustomize edit set image frontend=${{ steps.image.outputs.IMG }}
+          cat kustomization.yaml
+      - name: Commit kustomization
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -a -m "${{ steps.image.outputs.IMG }}"
+      - name: Push changes to staging
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: staging
+          force: true
