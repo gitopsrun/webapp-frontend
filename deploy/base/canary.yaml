@@ -17,7 +17,6 @@ spec:
     targetPort: 9898
     gateways:
     - public-gateway.istio-system.svc.cluster.local
-    - mesh
     hosts:
     - '*'
     trafficPolicy:
