@@ -16,7 +16,7 @@ spec:
     port: 80
     targetPort: 9898
     gateways:
-    - public-gateway.istio-system.svc.cluster.local
+    - gateway.istio-system.svc.cluster.local
     hosts:
     - '*'
     trafficPolicy:
