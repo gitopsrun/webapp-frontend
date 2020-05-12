@@ -1,0 +1,68 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: frontend
+spec:
+  progressDeadlineSeconds: 120
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta1
+    kind: HorizontalPodAutoscaler
+    name: frontend
+  service:
+    port: 80
+    targetPort: 9898
+    gateways:
+    - public-gateway.istio-system.svc.cluster.local
+    - mesh
+    hosts:
+    - '*'
+    trafficPolicy:
+      tls:
+        mode: DISABLE
+    match:
+    - uri:
+        prefix: /
+    rewrite:
+      uri: /
+    timeout: 30s
+  analysis:
+    interval: 15s
+    threshold: 10
+    maxWeight: 50
+    stepWeight: 5
+    metrics:
+    - name: error-rate
+      templateRef:
+        name: error-rate
+        namespace: istio-system
+      thresholdRange:
+        # 1% error rate
+        max: 1
+      interval: 30s
+    - name: latency
+      templateRef:
+        name: latency
+        namespace: istio-system
+      thresholdRange:
+        # 500ms max latency
+        max: 500
+      interval: 30s
+    webhooks:
+      - name: conformance-test
+        type: pre-rollout
+        url: http://flagger-loadtester.$(NAMESPACE)
+        timeout: 15s
+        metadata:
+          type: "bash"
+          cmd: curl -sd 'test' http://podinfo-canary.$(NAMESPACE)/token | grep token
+      - name: load-test
+        type: rollout
+        url: http://flagger-loadtester.$(NAMESPACE)
+        timeout: 5s
+        metadata:
+          type: cmd
+          cmd: hey -z 1m -q 10 -c 2 http://podinfo-canary.$(NAMESPACE)/

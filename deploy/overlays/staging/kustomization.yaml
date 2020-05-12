@@ -3,6 +3,16 @@ kind: Kustomization
 namespace: staging
 resources:
 - ../../base
+vars:
+- name: NAMESPACE
+  objref:
+    kind: Deployment
+    name: frontend
+    apiVersion: apps/v1
+  fieldref:
+    fieldpath: metadata.namespace
+configurations:
+- kustomizeconfig.yaml
 images:
 - name: frontend
   newName: gitopsrun/webpp-frontend
