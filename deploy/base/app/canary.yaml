@@ -19,9 +19,6 @@ spec:
     - gateway.istio-system.svc.cluster.local
     hosts:
     - '*'
-    trafficPolicy:
-      tls:
-        mode: DISABLE
     match:
     - uri:
         prefix: /
