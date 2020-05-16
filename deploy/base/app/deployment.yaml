@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: app
 spec:
   minReadySeconds: 3
   revisionHistoryLimit: 5
@@ -12,14 +12,14 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: frontend
+      app: app
   template:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9797"
       labels:
-        app: frontend
+        app: app
     spec:
       containers:
       - name: frontend
@@ -37,7 +37,8 @@ spec:
         - --port=9898
         - --port-metrics=9797
         - --level=info
-        - --backend-url=http://backend:9898/echo
+        - --cache-server=cache:6379
+        - --backend-url=http://app.backend:9898/echo
         env:
         - name: PODINFO_UI_COLOR
           value: "#34577c"

@@ -1,17 +1,17 @@
 apiVersion: flagger.app/v1beta1
 kind: Canary
 metadata:
-  name: frontend
+  name: app
 spec:
   progressDeadlineSeconds: 120
   targetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: frontend
+    name: app
   autoscalerRef:
     apiVersion: autoscaling/v2beta1
     kind: HorizontalPodAutoscaler
-    name: frontend
+    name: app
   service:
     port: 80
     targetPort: 9898
@@ -57,11 +57,11 @@ spec:
         timeout: 15s
         metadata:
           type: "bash"
-          cmd: curl -sd 'test' http://podinfo-canary.$(NAMESPACE)/token | grep token
+          cmd: curl -sd 'test' http://app-canary.$(NAMESPACE)/token | grep token
       - name: load-test
         type: rollout
         url: http://flagger-loadtester.$(NAMESPACE)
         timeout: 5s
         metadata:
           type: cmd
-          cmd: hey -z 1m -q 10 -c 2 http://podinfo-canary.$(NAMESPACE)/
+          cmd: hey -z 1m -q 10 -c 2 http://app-canary.$(NAMESPACE)/
