@@ -9,7 +9,7 @@ on:
 jobs:
   build-push:
     env:
-      IMG_REPO: gitopsrun/webpp-frontend
+      IMG_REPO: ${{ github.event.repository.name }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
