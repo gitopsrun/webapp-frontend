@@ -9,7 +9,7 @@ on:
 jobs:
   build-push:
     env:
-      IMG_REPO: ${{ github.event.repository.name }}
+      IMG_REPO: ${{ github.repository }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
