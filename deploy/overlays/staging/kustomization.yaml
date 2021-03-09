@@ -5,16 +5,16 @@ resources:
 - ../../base/app
 - ../../base/cache
 vars:
-- name: NAMESPACE
+- fieldref:
+    fieldPath: metadata.namespace
+  name: NAMESPACE
   objref:
+    apiVersion: apps/v1
     kind: Deployment
     name: app
-    apiVersion: apps/v1
-  fieldref:
-    fieldpath: metadata.namespace
 configurations:
 - kustomizeconfig.yaml
 images:
 - name: frontend
-  newName: gitopsrun/webpp-frontend
+  newName: gitopsrun/webapp-frontend
   newTag: staging
