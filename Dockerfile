@@ -14,7 +14,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-s -w \
   -X github.com/stefanprodan/podinfo/pkg/version.VERSION=${VERSION}" \
   -a -o bin/podinfo cmd/podinfo/*
 
-FROM alpine:3.11
+FROM alpine:3.13
 
 RUN addgroup -S app \
     && adduser -S -g app app \
