@@ -17,4 +17,4 @@ configurations:
 images:
 - name: frontend
   newName: gitopsrun/webapp-frontend
-  newTag: staging
+  newTag: 05d85d2
