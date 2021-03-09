@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Kustomize
-        uses: ./.github/actions/kustomize
+        uses: fluxcd/pkg//actions/kustomize@main
       - name: Set image metadata
         id: image
         run: |
